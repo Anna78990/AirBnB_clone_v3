@@ -113,3 +113,28 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_count(self):
+        """Test to count objects in file storage"""
+        storage = FileStorage()
+        new_dict = storage.all()
+        before = len(new_dict)
+        state = State()
+        storage.new(state)
+        storage.save()
+        after = storage.count()
+        self.assertEqual(after - before, 1)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_find(self):
+        """Test to find the objects of given id in file storage"""
+        storage = FileStorage()
+        state = State()
+        storage.new(state)
+        first_state_id = list(storage.all(State).values())[0].id
+        """ je fait des que je sait le me chanisme de sauvegarder et relire le file.json""""
+        got = storage.get(State, first_state_id)
+        value = "State.{}".format(first_state_id)
+        id = got[value]['id']
+        self.assertEqual(id, first_state.id)

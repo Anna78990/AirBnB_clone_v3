@@ -77,13 +77,8 @@ class DBStorage:
 
     def get(self, cls, id):
         """get the object specified by id"""
-        for clss in classes:
-            if cls is classes[clss]:
-                objs = self.__session.query(classes[clss]).all()
-                for obj in objs:
-                    if obj.id == id:
-                        return (obj)
-        return (None)
+        s = cls.__name__ + id
+        print(s)
 
     def count(self, cls=None):
         """count objects specified by class name"""
