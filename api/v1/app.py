@@ -11,16 +11,20 @@ app.register_blueprint(app_views)
 
 
 @app.teardown_appcontext
-storage.close()
+def close_app():
+    storage.close()
 
 if __name__ == "__main__":
-    if $HBNB_API_HOST is None:
-        host = 0.0.0.0
+    HBNB_API_HOST = getenv('HBNB_API_HOST')
+    HBNB_API_PORT = getenv('HBNB_API_PORT')
+
+    if HBNB_API_HOST is None:
+        host = "0.0.0.0"
     else:
-        host = $HBNB_API_HOST
-    if $HBNB_API_PORT is None:
+        host = HBNB_API_HOST
+    if HBNB_API_PORT is None:
         port = 5000
     else:
-        port = $HBNB_API_PORT
+        port = HBNB_API_PORT
     threaded = True
     app.run(host, port)
