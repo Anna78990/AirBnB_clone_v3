@@ -1,30 +1,24 @@
 #!/usr/bin/python3
-"""Module for task 4"""
-
-
-from flask import Flask
+""" api definition
+"""
 from models import storage
+from flask import Flask, Blueprint
 from api.v1.views import app_views
+from os import getenv
 
-app = Flask()
+app = Flask(__name__)
 app.register_blueprint(app_views)
 
-
 @app.teardown_appcontext
-def close_app():
+def teardown_appcontext(exception):
     storage.close()
 
 if __name__ == "__main__":
-    HBNB_API_HOST = getenv('HBNB_API_HOST')
-    HBNB_API_PORT = getenv('HBNB_API_PORT')
-
-    if HBNB_API_HOST is None:
-        host = "0.0.0.0"
-    else:
-        host = HBNB_API_HOST
-    if HBNB_API_PORT is None:
-        port = 5000
-    else:
-        port = HBNB_API_PORT
-    threaded = True
-    app.run(host, port)
+    host_e = getenv("HBNB_API_HOST")
+    if host_e is None:
+        host_e = "0.0.0.0"
+    port_e = getenv("HBNB_API_PORT")
+    if port_e is None:
+        port_e = "5000"
+    app.debug = True
+    app.run(host=host_e, port=port_e, threaded=True)
