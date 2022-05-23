@@ -7,6 +7,7 @@ from api.v1.views import app_views
 from models import storage
 from models.amenity import Amenity
 
+
 @app_views.route('/amenities', methods=['GET', 'POST'], strict_slashes=False)
 def amenities():
     """ return json object """
@@ -28,7 +29,9 @@ def amenities():
             serialized = new.to_dict()
             return make_response(jsonify(serialized), 201)
 
-@app_views.route('/amenities/<amenity_id>', methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
+
+@app_views.route('/amenities/<amenity_id>',
+                 methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
 def amenity_id(amenity_id):
     """ return json object """
     obj = storage.get(Amenity, amenity_id)
