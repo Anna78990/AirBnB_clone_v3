@@ -17,16 +17,16 @@ def users():
             users.append(v.to_dict())
         return (jsonify(users))
 
-  if request.method == "POST":
-    params = request.get_json()
-    if params is None:
-      abort(400, "Not a JSON")
-    if params['name'] is None:
-      abort(400, "Missing name")
-    else:
-      new = User(**params)
-      serialized = new.to_dict()
-      return make_response(jsonify(serialized), 201)
+    if request.method == "POST":
+        params = request.get_json()
+        if params is None:
+            abort(400, "Not a JSON")
+        if params['name'] is None:
+            abort(400, "Missing name")
+        else:
+            new = User(**params)
+            serialized = new.to_dict()
+            return make_response(jsonify(serialized), 201)
 
 @app_views.route('/users/<user_id>', methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
 def user(user_id):
