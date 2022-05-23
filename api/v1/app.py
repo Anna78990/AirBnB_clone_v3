@@ -2,7 +2,7 @@
 """ api definition
 """
 from models import storage
-from flask import Flask, Blueprint, jsonify
+from flask import Flask, Blueprint, jsonify, make_response
 from api.v1.views import app_views
 from os import getenv
 
@@ -13,7 +13,7 @@ app.register_blueprint(app_views)
 @app.errorhandler(404)
 def not_found(e):
     """ if 404 error occurs, return json objects """
-    return jsonify({"error": "Not found"})
+    return make_response(jsonify({"error": "Not found"}), 404)
 
 
 @app.teardown_appcontext
