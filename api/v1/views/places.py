@@ -7,6 +7,7 @@ from api.v1.views import app_views
 from models import storage
 from models.place import Place
 
+
 @app_views.route('/places', methods=['GET', 'POST'], strict_slashes=False)
 def places():
     """ return json object """
@@ -28,11 +29,14 @@ def places():
             serialized = new.to_dict()
             return make_response(jsonify(serialized), 201)
 
-@app_views.route('/users/<user_id>', methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
+
+@app_views.route('/users/<user_id>',
+                 methods=['GET', 'DELETE', 'PUT'],
+                 strict_slashes=False)
 def place(place_id):
     """ return json object """
     place = storage.get(Place, place_id)
-    if place == None:
+    if place is None:
         abort(404)
 
     if request.method == 'GET':

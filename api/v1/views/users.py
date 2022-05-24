@@ -7,6 +7,7 @@ from api.v1.views import app_views
 from models import storage
 from models.user import User
 
+
 @app_views.route('/users', methods=['GET', 'POST'], strict_slashes=False)
 def users():
     """ return json object """
@@ -28,7 +29,10 @@ def users():
             serialized = new.to_dict()
             return make_response(jsonify(serialized), 201)
 
-@app_views.route('/users/<user_id>', methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
+
+@app_views.route('/users/<user_id>',
+                 methods=['GET', 'DELETE', 'PUT'],
+                 strict_slashes=False)
 def user(user_id):
     """ return json object """
     user = storage.get(User, user_id)
@@ -54,4 +58,3 @@ def user(user_id):
         storage.save()
 
         return make_response(jsonify(user.to_dict()), 200)
-
