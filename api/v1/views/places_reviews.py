@@ -9,7 +9,7 @@ from models.review import Review
 from models.place import Place
 from models.user import User
 
-@app_views.route('places/<place_id>/reviews', methods=['GET', 'POST'], strict_slashes=False)
+@app_views.route('/places/<place_id>/reviews', methods=['GET', 'POST'], strict_slashes=False)
 def place_reviews(place_id):
     """ return json object """
     obj = storage.get(Place, place_id)
