@@ -133,9 +133,9 @@ class TestFileStorage(unittest.TestCase):
         state = State()
         storage.new(state)
         first_state_id = list(storage.all(State).values())[0].id
-        """ je fait des que je sait le me chanisme\
-            de sauvegarder et relire le file.json""""
+        """ je fait des que je sait le mechanisme\
+            de sauvegarder et relire le file.json"""
         got = storage.get(State, first_state_id)
         value = "State.{}".format(first_state_id)
-        id = got[value]['id']
-        self.assertEqual(id, first_state.id)
+        id = got.id
+        self.assertEqual(id, first_state_id)
