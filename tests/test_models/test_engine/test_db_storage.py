@@ -89,8 +89,24 @@ class TestFileStorage(unittest.TestCase):
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_count(self):
-        """Test to count objects in file storage"""
+        """Test to count objects in db storage"""
+        storage = DBStorage()
+        new_dict = storage.all()
+        before = len(new_dict)
+        state = State()
+        storage.new(state)
+        storage.save()
+        after = storage.count()
+        self.assertEqual(after - before, 1)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_find(self):
-        """Test to find the objects of given id in file storage"""
+        """Test to find the objects of given id in db storage"""
+        storage = DBStorage()
+        state = State()
+        storage.new(state)
+        first_state_id = list(storage.all(State).values())[0].id
+        got = storage.get(State, first_state_id)
+        value = "State.{}".format(first_state_id)
+        id = got.id
+        self.assertEqual(id, first_state_id)
