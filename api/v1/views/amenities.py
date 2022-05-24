@@ -22,7 +22,7 @@ def amenities():
         params = request.get_json()
         if params is None:
             abort(400, "Not a JSON")
-        if params['name'] is None:
+        if 'name' not in params.key():
             abort(400, "Missing name")
         else:
             new = Amenity(**params)
@@ -39,7 +39,7 @@ def amenity_id(amenity_id):
         abort(404)
 
     if request.method == 'GET':
-        return (jsonify(obj))
+        return (jsonify(obj.to_dict()))
 
     if request.method == "PUT":
         ig_list = ['id', 'created_at', 'updated_at']
@@ -50,9 +50,9 @@ def amenity_id(amenity_id):
             if k not in ig_list:
                 setattr(obj, k, v)
         storage.save()
-        return make_response(jsonify(obj.to_dict), 200)
+        return make_response(jsonify(obj.to_dict()), 200)
 
     if request.method == "DELETE":
-        obj.delete(obj)
+        storage.delete(obj)
         storage.save()
         return make_response(jsonify({}), 200)
