@@ -9,7 +9,7 @@ from models.review import Review
 from models.place import Place
 from models.user import User
 
-@app_views.route('places/<place_id>/reviews', methods=['GET', 'POST'], strict_slashes=False)
+@app_views.route('/places/<place_id>/reviews', methods=['GET', 'POST'], strict_slashes=False)
 def place_reviews(place_id):
     """ return json object """
     obj = storage.get(Place, place_id)
@@ -17,22 +17,27 @@ def place_reviews(place_id):
         abort(404)
 
     if request.method == 'GET':
-        return (jsonify(obj))
+        review_list = []
+        reviews = storage.all(Review).values()
+        for r in reviews:
+            if r.place_id == place_id:
+                review_list.append(r.to_dict())
+        return (jsonify(review_list))
 
     if request.method == "POST":
         params = request.get_json()
         if params is None:
             abort(400, "Not a JSON")
-        if params['user_id'] is None:
+        if 'user_id' not in params:
             abort(400, "Missing user_id")
         else:
             user_id = params['user_id']
             if storage.get(User, user_id) is None:
                 abort(404)
-        if params['text'] is None:
+        if 'text' not in params:
             abort(404, "Missing text")
         else:
-            new = User(**params)
+            new = Review(**params)
             serialized = new.to_dict()
             return make_response(jsonify(serialized), 201)
 
@@ -46,7 +51,7 @@ def review_id(review_id):
         abort(404)
 
     if request.method == 'GET':
-        return (jsonify(obj))
+        return (jsonify(obj.to_dict()))
 
     if request.method == "PUT":
         ig_list = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
@@ -57,9 +62,9 @@ def review_id(review_id):
             if k not in ig_list:
                 setattr(obj, k, v)
         storage.save()
-        return make_response(jsonify(obj.to_dict), 200)
+        return make_response(jsonify(obj.to_dict()), 200)
 
     if request.method == "DELETE":
-        obj.delete(obj)
+        storage.delete(obj)
         storage.save()
         return make_response(jsonify({}), 200)
