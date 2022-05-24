@@ -22,8 +22,10 @@ def users():
         params = request.get_json()
         if params is None:
             abort(400, "Not a JSON")
-        if 'name' not in params.keys():
-            abort(400, "Missing name")
+        if 'email' not in params.keys():
+            abort(400, "Missing email")
+        if 'password' not in params.keys():
+            abort(400, "Missing password")
         else:
             new = User(**params)
             serialized = new.to_dict()
