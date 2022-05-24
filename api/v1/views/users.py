@@ -22,7 +22,7 @@ def users():
         params = request.get_json()
         if params is None:
             abort(400, "Not a JSON")
-        if params['name'] is None:
+        if 'name' not in params.keys():
             abort(400, "Missing name")
         else:
             new = User(**params)
@@ -39,7 +39,6 @@ def user(user_id):
     if user is None:
         abort(404)
     if request.method == 'GET':
-        users = storage.all(User)
         return (jsonify(user.to_dict()))
 
     if request.method == 'DELETE':
@@ -48,7 +47,7 @@ def user(user_id):
         return make_response(jsonify({}), 200)
 
     if request.method == "PUT":
-        put_list = ['id', 'created_at', 'updated_at']
+        put_list = ['id', 'email', 'created_at', 'updated_at']
         params = request.get_json()
         if params is None:
             abort(400, "Not a JSON")
