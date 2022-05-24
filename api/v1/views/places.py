@@ -62,8 +62,8 @@ def place(place_id):
         for k, v in params.items():
             if k not in ig_list:
                 setattr(place, k, v)
-                storage.save()
-        return make_response(jsonify(place.to_dict), 200)
+        storage.save()
+        return make_response(jsonify(place.to_dict()), 200)
 
     if request.method == 'DELETE':
         storage.delete(place)
