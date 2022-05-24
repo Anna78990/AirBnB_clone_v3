@@ -12,7 +12,7 @@ from models.user import User
 
 @app_views.route('/cities/<city_id>/places',
                  methods=['GET', 'POST'], strict_slashes=False)
-def places():
+def places(city_id):
     """ return json object """
     city_obj = storage.get(City, city_id)
     if city_obj is None:
@@ -22,7 +22,7 @@ def places():
         place_list = []
         place = storage.all(Place).values()
         for p in place:
-            if p.city_id == city.id:
+            if p.city_id == city_id:
                 place_list.append(p.to_dict())
         return (jsonify(place_list))
 
@@ -32,7 +32,7 @@ def places():
             abort(400, "Not a JSON")
         if "user_id" not in params:
             abort(400, "Missing user_id")
-        if storage.get(User, user_id) is None:
+        if storage.get(User, params['user_id']) is None:
             abort(404)
         if "name" not in params:
             abort(400, "Missing name")
@@ -42,7 +42,7 @@ def places():
             return make_response(jsonify(serialized), 201)
 
 
-@app_views.route('/place/<place_id>',
+@app_views.route('/places/<place_id>',
                  methods=['GET', 'DELETE', 'PUT'],
                  strict_slashes=False)
 def place(place_id):
@@ -62,8 +62,8 @@ def place(place_id):
         for k, v in params.items():
             if k not in ig_list:
                 setattr(place, k, v)
-                storage.save()
-        return make_response(jsonify(place.to_dict), 200)
+        storage.save()
+        return make_response(jsonify(place.to_dict()), 200)
 
     if request.method == 'DELETE':
         storage.delete(place)
