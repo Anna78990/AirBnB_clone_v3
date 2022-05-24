@@ -22,7 +22,7 @@ def states():
         params = request.get_json()
         if params is None:
             abort(400, "Not a JSON")
-        if params['name'] is None:
+        if 'name' not in params.keys():
             abort(400, "Missing name")
         else:
             new = State(**params)
