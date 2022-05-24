@@ -10,7 +10,8 @@ from models.state import State
 from models.city import City
 
 
-@app_views.route('/states/<state_id>/cities', methods=['GET', 'POST'], strict_slashes=False)
+@app_views.route('/states/<state_id>/cities',
+                 methods=['GET', 'POST'], strict_slashes=False)
 def cities_per_state(state_id):
     """
         cities route to handle http method for requested cities by state
@@ -38,7 +39,9 @@ def cities_per_state(state_id):
         serialized = new.to_dict()
         return make_response(jsonify(serialized), 201)
 
-@app_views.route('/cities/<city_id>', methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
+
+@app_views.route('/cities/<city_id>',
+                 methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
 def cities_with_id(city_id):
     """
         cities route to handle http methods for given city
