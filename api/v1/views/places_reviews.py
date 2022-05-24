@@ -18,7 +18,6 @@ def place_reviews(place_id):
 
     if request.method == 'GET':
         review_list = []
-        return (jsonify(obj))
         reviews = storage.all(Review).values()
         for r in reviews:
             if r.place_id == place_id:
