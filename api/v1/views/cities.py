@@ -19,7 +19,12 @@ def cities_per_state(state_id):
         abort(404, 'Not found')
 
     if request.method == 'GET':
-        return jsonify(state_obj.to_dict())
+        cities = storage.all(Ciry).values()
+        city_list = []
+        for i in cities:
+            if i.state_id == state_id:
+                citylist.append(i)
+        return jsonify(citylist)
 
     if request.method == 'POST':
         req_json = request.get_json()
