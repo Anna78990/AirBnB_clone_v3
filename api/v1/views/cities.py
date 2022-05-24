@@ -2,6 +2,7 @@
 """
 Flask route that returns json status response
 """
+import json
 from api.v1.views import app_views
 from flask import abort, jsonify, request, make_response
 from models import storage
@@ -19,12 +20,10 @@ def cities_per_state(state_id):
         abort(404, 'Not found')
 
     if request.method == 'GET':
-        cities = storage.all(Ciry).values()
         city_list = []
-        for i in cities:
-            if i.state_id == state_id:
-                citylist.append(i)
-        return jsonify(citylist)
+        for city in state_obj.cities:
+            city_list.append(city.to_dict())
+        return jsonify(city_list)
 
     if request.method == 'POST':
         req_json = request.get_json()
