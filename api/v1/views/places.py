@@ -6,23 +6,35 @@ from flask import jsonify, request, abort, make_response
 from api.v1.views import app_views
 from models import storage
 from models.place import Place
+from models.city import City
+from models.user import User
 
 
-@app_views.route('/places', methods=['GET', 'POST'], strict_slashes=False)
+@app_views.route('/cities/<city_id>/places',
+                 methods=['GET', 'POST'], strict_slashes=False)
 def places():
     """ return json object """
+    city_obj = storage.get(City, city_id)
+    if city_obj is None:
+        abort(404)
+
     if request.method == 'GET':
-        all_place = storage.all(User)
-        places = []
-        for k, v in all_place.items():
-            places.append(v.to_dict())
-        return (jsonify(places))
+        place_list = []
+        place = storage.all(Place).values()
+        for p in place:
+            if p.city_id == city.id:
+                place_list.append(p.to_dict())
+        return (jsonify(place_list))
 
     if request.method == "POST":
         params = request.get_json()
         if params is None:
             abort(400, "Not a JSON")
-        if params['name'] is None:
+        if "user_id" not in params:
+            abort(400, "Missing user_id")
+        if storage.get(User, user_id) is None:
+            abort(404)
+        if "name" not in params:
             abort(400, "Missing name")
         else:
             new = Place(**params)
@@ -30,7 +42,7 @@ def places():
             return make_response(jsonify(serialized), 201)
 
 
-@app_views.route('/users/<user_id>',
+@app_views.route('/place/<place_id>',
                  methods=['GET', 'DELETE', 'PUT'],
                  strict_slashes=False)
 def place(place_id):
@@ -43,7 +55,7 @@ def place(place_id):
         return (jsonify(place.to_dict()))
 
     if request.method == "PUT":
-        ig_list = ['id', 'created_at', 'updated_at']
+        ig_list = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
         params = request.get_json()
         if params is None:
             abort(400, "Not a JSON")
@@ -54,6 +66,6 @@ def place(place_id):
         return make_response(jsonify(place.to_dict), 200)
 
     if request.method == 'DELETE':
-        storage.delete(obj)
+        storage.delete(place)
         storage.save()
         return make_response(jsonify({}), 200)
